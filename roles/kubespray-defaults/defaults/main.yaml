@@ -15,7 +15,7 @@ is_fedora_coreos: false
 disable_swap: true
 
 ## Change this to use another Kubernetes version, e.g. a current beta release
-kube_version: v1.20.7
+kube_version: v1.21.1
 
 ## The minimum version working
 kube_version_min_required: v1.19.0
@@ -237,6 +237,10 @@ container_manager: docker
 # When enabled, it requires `container_manager` different than Docker
 kata_containers_enabled: false
 
+# Enable gVisor as an additional container runtime
+# gVisor is only supported with container_manager Docker or containerd
+gvisor_enabled: false
+
 # Enable crun as additional container runtime
 # When enabled, it requires container_manager=crio
 crun_enabled: false
@@ -310,12 +314,7 @@ docker_plugins: []
 etcd_kubeadm_enabled: false
 
 # Containerd options
-containerd_version: >-
-  {%- if ansible_os_family == "Debian" and ansible_distribution_release == "stretch" -%}
-  1.4.3
-  {%- else -%}
-  1.4.4
-  {%- endif -%}
+containerd_version: 1.4.6
 containerd_use_systemd_cgroup: true
 
 # Settings for containerized control plane (etcd/kubelet/secrets)
@@ -375,6 +374,7 @@ openstack_blockstorage_ignore_volume_az: "{{ volume_cross_zone_attachment | defa
 # Set Cinder topology zones (can be multiple zones, default not set)
 # cinder_topology_zones:
 #   - nova
+cinder_csi_ignore_volume_az: "{{ volume_cross_zone_attachment | default('false') }}"
 
 ## When OpenStack is used, if LBaaSv2 is available you can enable it with the following 2 variables.
 openstack_lbaas_enabled: false
